@@ -72,7 +72,15 @@ def encode_string(
     Returns:
         A list encoding the input_string"""
 
-    return list(map(vocab.index, input_string))  # type: ignore[arg-type]
+    return_obj = None
+    try:
+        return_obj = list(map(vocab.index, input_string))  # type: ignore[arg-type]
+    except Exception as e:
+        print("Exception caused in encode_string: " + str(e) )
+        print("vocab.index: " + str(vocab.index) )
+        print("input_string: " + str(input_string) )
+
+    return return_obj
 
 
 def decode_sequence(
@@ -121,40 +129,46 @@ def encode_sequences(
     Returns:
         the padded encoded data as a tensor
     """
+    try:
+        if 0 <= eos < len(vocab):
+            print("0 <= eos < len(vocab) caused an error.")
+            raise ValueError("argument 'eos' needs to be outside of vocab possible indices")
 
-    if 0 <= eos < len(vocab):
-        raise ValueError("argument 'eos' needs to be outside of vocab possible indices")
+        if not isinstance(target_size, int) or dynamic_seq_length:
+            # Maximum string length + EOS
+            max_length = max(len(w) for w in sequences) + 1
+            if isinstance(sos, int):
+                max_length += 1
+            if isinstance(pad, int):
+                max_length += 1
+            target_size = max_length if not isinstance(target_size, int) else min(max_length, target_size)
 
-    if not isinstance(target_size, int) or dynamic_seq_length:
-        # Maximum string length + EOS
-        max_length = max(len(w) for w in sequences) + 1
-        if isinstance(sos, int):
-            max_length += 1
-        if isinstance(pad, int):
-            max_length += 1
-        target_size = max_length if not isinstance(target_size, int) else min(max_length, target_size)
+        # Pad all sequences
+        if isinstance(pad, int):  # pad with padding symbol
+            if 0 <= pad < len(vocab):
+                print("0 <= pad < len(vocab) caused an error.")
+                raise ValueError("argument 'pad' needs to be outside of vocab possible indices")
+            # In that case, add EOS at the end of the word before padding
+            default_symbol = pad
+        else:  # pad with eos symbol
+            default_symbol = eos
+        encoded_data = np.full([len(sequences), target_size], default_symbol, dtype=np.int32)
 
-    # Pad all sequences
-    if isinstance(pad, int):  # pad with padding symbol
-        if 0 <= pad < len(vocab):
-            raise ValueError("argument 'pad' needs to be outside of vocab possible indices")
-        # In that case, add EOS at the end of the word before padding
-        default_symbol = pad
-    else:  # pad with eos symbol
-        default_symbol = eos
-    encoded_data = np.full([len(sequences), target_size], default_symbol, dtype=np.int32)
+        # Encode the strings
+        for idx, seq in enumerate(map(partial(encode_string, vocab=vocab), sequences)):
+            if isinstance(pad, int):  # add eos at the end of the sequence
+                seq.append(eos)
+            encoded_data[idx, :min(len(seq), target_size)] = seq[:min(len(seq), target_size)]
 
-    # Encode the strings
-    for idx, seq in enumerate(map(partial(encode_string, vocab=vocab), sequences)):
-        if isinstance(pad, int):  # add eos at the end of the sequence
-            seq.append(eos)
-        encoded_data[idx, :min(len(seq), target_size)] = seq[:min(len(seq), target_size)]
-
-    if isinstance(sos, int):  # place sos symbol at the beginning of each sequence
-        if 0 <= sos < len(vocab):
-            raise ValueError("argument 'sos' needs to be outside of vocab possible indices")
-        encoded_data = np.roll(encoded_data, 1)
-        encoded_data[:, 0] = sos
+        if isinstance(sos, int):  # place sos symbol at the beginning of each sequence
+            if 0 <= sos < len(vocab):
+                print("0 <= sos < len(vocab) caused an error.")
+                raise ValueError("argument 'sos' needs to be outside of vocab possible indices")
+            encoded_data = np.roll(encoded_data, 1)
+            encoded_data[:, 0] = sos
+       
+    except Exception as ex:
+        print("Unknown exception: " + str(ex) )
 
     return encoded_data
 
