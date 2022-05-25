@@ -74,12 +74,11 @@ def encode_string(
 
     return_obj = None
     
-    index_sub = (ch) => {
+    def index_sub(ch):
         if ch in vocab:
             return vocab.index(ch)
         print("Unknown character: " + ch + ", ord: " + str(ord(ch)) )
         return None
-    }
     
     try:
         return_obj = list(map(index_sub, input_string))  # type: ignore[arg-type]
