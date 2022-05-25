@@ -77,13 +77,10 @@ def encode_string(
     def index_sub(ch):
         if ch in vocab:
             return vocab.index(ch)
-        print("Unknown character: " + ch + ", ord: " + str(ord(ch)) )
         return None
     
     try:
         return_obj = list(map(index_sub, input_string))  # type: ignore[arg-type]
-        if None in return_obj:
-            raise Exception("Unknown characters found!")
         return_obj = [l for l in return_obj if l!=None]
     except Exception as e:
         print("Exception caused in encode_string: " + str(e) )
