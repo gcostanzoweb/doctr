@@ -19,10 +19,11 @@ VOCABS: Dict[str, str] = {
     'persian_letters': 'پچڢڤگ',
     'hindi_digits': '٠١٢٣٤٥٦٧٨٩',
     'arabic_diacritics': 'ًٌٍَُِّْ',
-    'arabic_punctuation': '؟؛«»—'
+    'arabic_punctuation': '؟؛«»—',
+    'whitespace': ' '
 }
 
-VOCABS['latin'] = VOCABS['digits'] + VOCABS['ascii_letters'] + VOCABS['punctuation']
+VOCABS['latin'] = VOCABS['digits'] + VOCABS['ascii_letters'] + VOCABS['punctuation'] + VOCABS['whitespace']
 VOCABS['english'] = VOCABS['latin'] + '°' + VOCABS['currency']
 VOCABS['legacy_french'] = VOCABS['latin'] + '°' + 'àâéèêëîïôùûçÀÂÉÈËÎÏÔÙÛÇ' + VOCABS['currency']
 VOCABS['french'] = VOCABS['english'] + 'àâéèêëîïôùûüçÀÂÉÈÊËÎÏÔÙÛÜÇ'
