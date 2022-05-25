@@ -83,6 +83,8 @@ def encode_string(
     
     try:
         return_obj = list(map(index_sub, input_string))  # type: ignore[arg-type]
+        if None in return_obj:
+            raise Exception("Unknown characters found!")
         return_obj = [l for l in return_obj if l!=None]
     except Exception as e:
         print("Exception caused in encode_string: " + str(e) )
