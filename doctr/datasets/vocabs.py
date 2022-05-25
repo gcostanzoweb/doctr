@@ -20,7 +20,7 @@ VOCABS: Dict[str, str] = {
     'hindi_digits': '٠١٢٣٤٥٦٧٨٩',
     'arabic_diacritics': 'ًٌٍَُِّْ',
     'arabic_punctuation': '؟؛«»—',
-    'whitespace': ' '
+    'whitespace': ' \n'
 }
 
 VOCABS['latin'] = VOCABS['digits'] + VOCABS['ascii_letters'] + VOCABS['punctuation'] + VOCABS['whitespace']
