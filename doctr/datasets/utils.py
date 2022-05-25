@@ -73,11 +73,20 @@ def encode_string(
         A list encoding the input_string"""
 
     return_obj = None
+    
+    index_sub = (ch) => {
+        if ch in vocab:
+            return vocab.index(ch)
+        print("Unknown character: " + ch + ", ord: " + str(ord(ch)) )
+        return None
+    }
+    
     try:
-        return_obj = list(map(vocab.index, input_string))  # type: ignore[arg-type]
+        return_obj = list(map(index_sub, input_string))  # type: ignore[arg-type]
+        return_obj = [l for l in return_obj if l!=None]
     except Exception as e:
         print("Exception caused in encode_string: " + str(e) )
-        print("vocab.index: " + str(vocab.index) )
+        print("vocab: " + str(vocab) )
         print("input_string: " + str(input_string) )
 
     return return_obj
